@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dinesh Kumar Palanisamy</title>
+<meta name="description" content="Senior .NET and Azure engineer who ships production AI features: agents with typed tool calling, RAG on Azure OpenAI, evals and cost control.">
+<meta name="theme-color" content="#0f1214">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* Layout idea: a dark engineering logbook. Numbered sections, mono metadata,
+   production numbers up front, a left rail of section labels on wide screens. */
+:root {
+  --bg: #0f1214;
+  --surface: #161a1e;
+  --line: #262c33;
+  --text: #e8e6e1;
+  --muted: #9aa1a9;
+  --accent: #e8a33d;
+  --font-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --font-body: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, Consolas, monospace;
+  --wrap: 1120px;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0; background: var(--bg); color: var(--text);
+  font-family: var(--font-body); font-size: 17px; line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: inherit; }
+a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+.wrap { max-width: var(--wrap); margin: 0 auto; padding: 0 24px; }
+.mono { font-family: var(--font-mono); font-size: 13px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+h1, h2, h3 { font-family: var(--font-display); text-wrap: balance; margin: 0; }
+
+/* Nav */
+nav { position: sticky; top: 0; z-index: 10; background: rgba(15,18,20,.88); backdrop-filter: blur(8px); border-bottom: 1px solid var(--line); }
+nav .wrap { display: flex; align-items: center; justify-content: space-between; height: 60px; gap: 16px; }
+nav .logo { font-family: var(--font-mono); font-size: 13px; letter-spacing: .1em; text-decoration: none; }
+nav .logo b { color: var(--accent); font-weight: 500; }
+nav ul { display: flex; gap: 24px; list-style: none; margin: 0; padding: 0; }
+nav ul a { font-family: var(--font-mono); font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); text-decoration: none; }
+nav ul a:hover { color: var(--text); }
+@media (max-width: 600px) { nav ul { gap: 14px; } nav ul li:nth-child(2) { display: none; } }
+
+/* Hero */
+.hero { padding: 80px 0 56px; display: grid; grid-template-columns: 1fr auto; gap: 48px; align-items: center; }
+.hero .status { display: inline-flex; align-items: center; gap: 10px; margin-bottom: 24px; }
+.hero .status::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: #5fbf7a; box-shadow: 0 0 0 4px rgba(95,191,122,.18); }
+.hero h1 { font-size: clamp(40px, 6vw, 68px); line-height: 1.04; letter-spacing: -.02em; font-weight: 700; }
+.hero .role { font-family: var(--font-display); font-weight: 500; font-size: clamp(20px, 2.4vw, 26px); color: var(--accent); margin: 16px 0 20px; line-height: 1.3; }
+.hero p.lead { max-width: 62ch; color: var(--muted); margin: 0 0 28px; }
+.hero p.lead strong { color: var(--text); font-weight: 500; }
+.btns { display: flex; flex-wrap: wrap; gap: 12px; }
+.btn { display: inline-flex; align-items: center; gap: 8px; padding: 12px 20px; border-radius: 6px; font-family: var(--font-mono); font-size: 13px; letter-spacing: .06em; text-transform: uppercase; text-decoration: none; border: 1px solid var(--line); }
+.btn.primary { background: var(--accent); color: #1a1205; border-color: var(--accent); font-weight: 500; }
+.btn:hover { border-color: var(--accent); }
+.portrait { margin: 0; width: 260px; aspect-ratio: 5 / 6; border: 1px solid var(--line); border-radius: 12px; background: #000; overflow: hidden; position: relative; }
+.portrait img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.portrait figcaption { position: absolute; left: 0; right: 0; bottom: 0; padding: 28px 14px 12px; text-align: center; background: linear-gradient(transparent, rgba(0,0,0,.85)); color: var(--text); }
+@media (max-width: 760px) { .hero { grid-template-columns: 1fr; padding-top: 40px; gap: 28px; } .portrait { order: -1; width: 150px; } .portrait figcaption { display: none; } }
+
+/* Ticker */
+.ticker { border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); overflow: hidden; white-space: nowrap; padding: 14px 0; }
+.ticker .track { display: inline-block; animation: scroll 40s linear infinite; }
+.ticker span { font-family: var(--font-mono); font-size: 13px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); padding: 0 14px; }
+.ticker span.star { color: var(--accent); padding: 0; }
+@keyframes scroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+@media (prefers-reduced-motion: reduce) { .ticker .track { animation: none; } html { scroll-behavior: auto; } }
+
+/* Impact numbers */
+.impact { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; margin: 56px 0 0; }
+.impact div { background: var(--surface); padding: 24px 20px; }
+.impact b { display: block; font-family: var(--font-display); font-size: 38px; font-weight: 700; line-height: 1.1; color: var(--text); font-variant-numeric: tabular-nums; }
+.impact b em { font-style: normal; color: var(--accent); }
+.impact p { margin: 8px 0 0; font-size: 14px; color: var(--muted); line-height: 1.45; }
+@media (max-width: 860px) { .impact { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 420px) { .impact { grid-template-columns: 1fr; } }
+
+/* Sections */
+section.block { padding: 88px 0 0; scroll-margin-top: 60px; }
+.head { display: flex; align-items: baseline; gap: 16px; margin-bottom: 36px; border-bottom: 1px solid var(--line); padding-bottom: 16px; }
+.head .num { font-family: var(--font-mono); color: var(--accent); font-size: 14px; }
+.head h2 { font-size: clamp(28px, 3.4vw, 38px); font-weight: 700; letter-spacing: -.01em; }
+.prose { max-width: 66ch; }
+.prose p { margin: 0 0 16px; color: var(--muted); }
+.prose p strong { color: var(--text); font-weight: 500; }
+.about { display: grid; grid-template-columns: 1.6fr 1fr; gap: 48px; }
+.facts { border: 1px solid var(--line); border-radius: 10px; padding: 8px 20px; align-self: start; }
+.facts dl { margin: 0; }
+.facts div { display: flex; justify-content: space-between; gap: 16px; padding: 12px 0; border-bottom: 1px solid var(--line); font-size: 15px; }
+.facts div:last-child { border-bottom: 0; }
+.facts dt { color: var(--muted); }
+.facts dd { margin: 0; text-align: right; }
+@media (max-width: 760px) { .about { grid-template-columns: 1fr; } }
+
+/* Work */
+.work { display: grid; gap: 20px; }
+.card { border: 1px solid var(--line); border-radius: 10px; background: var(--surface); padding: 28px; display: grid; grid-template-columns: 1fr 1.1fr; gap: 32px; }
+.card.feature { border-color: rgba(232,163,61,.45); }
+.card .kind { margin-bottom: 10px; }
+.card h3 { font-size: 26px; font-weight: 700; line-height: 1.2; margin-bottom: 12px; }
+.card p { margin: 0 0 16px; color: var(--muted); font-size: 16px; }
+.flow { font-family: var(--font-mono); font-size: 12px; letter-spacing: .08em; color: var(--accent); margin: 0 0 18px; }
+.tags { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 18px; padding: 0; list-style: none; }
+.tags li { font-family: var(--font-mono); font-size: 12px; padding: 4px 10px; border: 1px solid var(--line); border-radius: 999px; color: var(--muted); }
+.links a { font-family: var(--font-mono); font-size: 13px; letter-spacing: .06em; text-transform: uppercase; color: var(--accent); text-decoration: none; }
+.links a:hover { text-decoration: underline; }
+.psr { display: grid; gap: 0; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); align-self: start; }
+.psr div { padding: 14px 18px; border-bottom: 1px solid var(--line); }
+.psr div:last-child { border-bottom: 0; }
+.psr .mono { display: block; margin-bottom: 4px; font-size: 11px; }
+.psr p { margin: 0; color: var(--text); font-size: 15px; line-height: 1.5; }
+.psr .result p { color: var(--accent); font-weight: 500; }
+.work-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.work-grid .card { grid-template-columns: 1fr; gap: 0; }
+.work-grid .psr { margin-top: 4px; }
+@media (max-width: 960px) { .work-grid { grid-template-columns: 1fr; } }
+@media (max-width: 760px) { .card { grid-template-columns: 1fr; padding: 22px; } }
+
+/* AI workflow */
+.steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 24px; }
+.step { border-top: 2px solid var(--accent); padding-top: 18px; }
+.step .mono { margin-bottom: 8px; display: block; }
+.step h3 { font-size: 21px; margin-bottom: 8px; }
+.step p { margin: 0; color: var(--muted); font-size: 16px; }
+.dk { border: 1px solid var(--line); border-radius: 10px; padding: 22px 24px; display: flex; flex-wrap: wrap; gap: 16px 32px; align-items: center; justify-content: space-between; }
+.dk p { margin: 0; max-width: 70ch; color: var(--muted); font-size: 16px; }
+.dk p strong { color: var(--text); font-weight: 500; }
+@media (max-width: 760px) { .steps { grid-template-columns: 1fr; } }
+
+/* Experience */
+.timeline { list-style: none; margin: 0; padding: 0; }
+.timeline li { display: grid; grid-template-columns: 200px 1fr; gap: 32px; padding: 26px 0; border-bottom: 1px solid var(--line); }
+.timeline li:first-child { padding-top: 0; }
+.timeline .when { font-family: var(--font-mono); font-size: 13px; color: var(--muted); letter-spacing: .04em; padding-top: 4px; font-variant-numeric: tabular-nums; }
+.timeline h3 { font-size: 21px; margin-bottom: 4px; }
+.timeline .org { color: var(--accent); font-size: 15px; margin-bottom: 10px; }
+.timeline ul { margin: 0; padding-left: 18px; color: var(--muted); font-size: 16px; }
+.timeline ul li { display: list-item; padding: 3px 0; border: 0; }
+@media (max-width: 760px) { .timeline li { grid-template-columns: 1fr; gap: 8px; } }
+
+/* Toolbox */
+.tools { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+.tools div { background: var(--surface); padding: 22px; }
+.tools h3 { font-family: var(--font-mono); font-size: 12px; font-weight: 500; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); margin-bottom: 10px; }
+.tools p { margin: 0; font-size: 15px; line-height: 1.7; }
+@media (max-width: 860px) { .tools { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 480px) { .tools { grid-template-columns: 1fr; } }
+
+/* Proof */
+.proof { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.proof div { border: 1px solid var(--line); border-radius: 10px; padding: 22px; }
+.proof b { display: block; font-family: var(--font-display); font-size: 20px; margin-bottom: 6px; }
+.proof p { margin: 0; color: var(--muted); font-size: 15px; }
+@media (max-width: 860px) { .proof { grid-template-columns: 1fr; } }
+
+/* Contact */
+.contact { padding: 88px 0 72px; }
+.contact-box { border: 1px solid var(--line); border-radius: 12px; background: var(--surface); padding: 40px; display: grid; grid-template-columns: 1.3fr 1fr; gap: 40px; align-items: center; }
+.contact-box h2 { font-size: clamp(28px, 3.6vw, 40px); margin-bottom: 12px; }
+.contact-box p { margin: 0; color: var(--muted); max-width: 52ch; }
+.channels { display: grid; gap: 10px; }
+.channels a { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 14px 18px; border: 1px solid var(--line); border-radius: 8px; text-decoration: none; background: var(--bg); }
+.channels a:hover { border-color: var(--accent); }
+.channels .mono { font-size: 11px; }
+.channels span:last-child { font-size: 15px; overflow-wrap: anywhere; text-align: right; }
+@media (max-width: 760px) { .contact-box { grid-template-columns: 1fr; padding: 26px; } }
+footer { border-top: 1px solid var(--line); padding: 24px 0 40px; }
+footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; }
+</style>
+</head>
+<body id="top">
+
+<nav aria-label="Main">
+  <div class="wrap">
+    <a class="logo" href="#top"><b>DK</b> / PORTFOLIO</a>
+    <ul>
+      <li><a href="#work">Work</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="#experience">Experience</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </div>
+</nav>
+
+<header class="wrap">
+  <div class="hero">
+    <div>
+      <div class="status mono">Open to remote roles and contracts · US, Canada, Europe</div>
+      <h1>Dinesh Kumar Palanisamy</h1>
+      <p class="role">Senior .NET + Azure engineer who ships production AI features.</p>
+      <p class="lead">I build <strong>AI agents with typed tool calling</strong> and <strong>RAG pipelines on Azure OpenAI</strong>, plus the parts that make them safe to run: evals that measure answer quality, tool traces so every answer can be checked, and cost control. 12 years of .NET, Azure, Angular and SQL. Working remotely for a US software company since 2024.</p>
+      <div class="btns">
+        <a class="btn primary" href="#work">View work</a>
+        <a class="btn" href="mailto:dinessns@gmail.com">Email me</a>
+      </div>
+    </div>
+    <figure class="portrait">
+      <img src="photo.jpg" alt="Dinesh Kumar Palanisamy" width="500" height="600">
+      <figcaption class="mono">Coimbatore, India</figcaption>
+    </figure>
+  </div>
+</header>
+
+<div class="ticker" aria-label="Core skills">
+  <div class="track">
+    <span>.NET 10</span><span class="star">✦</span><span>C#</span><span class="star">✦</span><span>ASP.NET Core</span><span class="star">✦</span><span>Azure OpenAI</span><span class="star">✦</span><span>RAG</span><span class="star">✦</span><span>AI Agents</span><span class="star">✦</span><span>Tool calling</span><span class="star">✦</span><span>Evals</span><span class="star">✦</span><span>Azure Functions</span><span class="star">✦</span><span>Service Bus</span><span class="star">✦</span><span>Entra ID</span><span class="star">✦</span><span>Angular</span><span class="star">✦</span><span>Nx</span><span class="star">✦</span><span>SQL Server</span><span class="star">✦</span><span>Redis</span><span class="star">✦</span><span>Docker</span><span class="star">✦</span>
+    <span aria-hidden="true">.NET 10</span><span class="star" aria-hidden="true">✦</span><span aria-hidden="true">C#</span><span class="star" aria-hidden="true">✦</span><span aria-hidden="true">ASP.NET Core</span><span class="star" aria-hidden="true">✦</span><span aria-hidden="true">Azure OpenAI</span><span class="star" aria-hidden="true">✦</span><span aria-hidden="true">RAG</span><span class="star" aria-hidden="true">✦</span><span aria-hidden="true">AI Agents</span><span class="star" aria-hidden="true">✦</span><span aria-hidden="true">Tool calling</span><span class="star" aria-hidden="true">✦</span><span aria-hidden="true">Evals</span><span class="star" aria-hidden="true">✦</span><span aria-hidden="true">Azure Functions</span><span class="star" aria-hidden="true">✦</span><span aria-hidden="true">Service Bus</span><span class="star" aria-hidden="true">✦</span><span aria-hidden="true">Entra ID</span><span class="star" aria-hidden="true">✦</span><span aria-hidden="true">Angular</span><span class="star" aria-hidden="true">✦</span><span aria-hidden="true">Nx</span><span class="star" aria-hidden="true">✦</span><span aria-hidden="true">SQL Server</span><span class="star" aria-hidden="true">✦</span><span aria-hidden="true">Redis</span><span class="star" aria-hidden="true">✦</span><span aria-hidden="true">Docker</span><span class="star" aria-hidden="true">✦</span>
+  </div>
+</div>
+
+<main class="wrap">
+
+  <div class="impact" aria-label="Production results">
+    <div><b>40<em>M</em></b><p>messages a month through one production environment, including night audit</p></div>
+    <div><b>12<em>x</em></b><p>lower cost per message after moving from WebJobs to Azure Functions on Service Bus</p></div>
+    <div><b>1,837</b><p>hotels and 10,000 users moved to Microsoft Entra ID single sign-on</p></div>
+    <div><b>55<em>%</em></b><p>faster Angular builds (3 min to 1 min 20 s) after the Nx monorepo split</p></div>
+  </div>
+
+  <section class="block" id="work">
+    <div class="head"><span class="num">01</span><h2>Selected work</h2></div>
+
+    <div class="work">
+      <article class="card feature">
+        <div>
+          <div class="kind mono">Open source · AI</div>
+          <h3>PMSKnowledgeBase</h3>
+          <p>A grounded RAG assistant in .NET 10 over a hotel property-management (PMS) sample dataset. Every answer cites its sources, and when the documents don't support an answer, it refuses instead of guessing.</p>
+          <p class="flow">INGEST → RETRIEVE → ANSWER WITH CITATIONS → REFUSE WHEN UNSUPPORTED</p>
+          <ul class="tags">
+            <li>.NET 10</li><li>Microsoft.Extensions.AI</li><li>Qdrant</li><li>Azure AI Search</li><li>Ollama</li><li>195 tests</li>
+          </ul>
+          <div class="links"><a href="https://github.com/DineshKumarPalanisamy/PMSKnowledgeBase">View on GitHub →</a></div>
+        </div>
+        <div class="psr">
+          <div><span class="mono">Problem</span><p>Hotel staff need answers from manuals and policies, and a wrong answer at the front desk costs money and trust.</p></div>
+          <div><span class="mono">Approach</span><p>Retrieval over the document set, answers grounded in what was retrieved, citations on every answer, and an explicit refusal path.</p></div>
+          <div class="result"><span class="mono">Result</span><p>195 automated tests covering retrieval, citations and refusals. MIT licensed.</p></div>
+        </div>
+      </article>
+
+      <div class="work-grid">
+        <article class="card">
+          <div>
+            <div class="kind mono">Case study · Azure</div>
+            <h3>Message processing that scales with the queue</h3>
+            <p class="flow">WEBJOBS → FUNCTIONS ON SERVICE BUS</p>
+            <ul class="tags"><li>Azure Functions</li><li>Service Bus</li><li>.NET</li></ul>
+          </div>
+          <div class="psr">
+            <div><span class="mono">Problem</span><p>Fixed-server WebJobs paid for peak capacity all day.</p></div>
+            <div><span class="mono">Change</span><p>Moved processing to Azure Functions triggered by Service Bus.</p></div>
+            <div class="result"><span class="mono">Result</span><p>40M messages a month at 12x lower cost per message.</p></div>
+          </div>
+        </article>
+
+        <article class="card">
+          <div>
+            <div class="kind mono">Case study · Identity</div>
+            <h3>Single sign-on for 1,837 hotels</h3>
+            <p class="flow">PASSWORDS → ENTRA ID SSO</p>
+            <ul class="tags"><li>Entra ID</li><li>OpenID Connect</li><li>MSAL</li><li>Microsoft Graph</li></ul>
+          </div>
+          <div class="psr">
+            <div><span class="mono">Problem</span><p>Username and password login across a large hotel customer base.</p></div>
+            <div><span class="mono">Change</span><p>Entra ID SSO with OIDC and MSAL. Admin access checked against Entra groups through Microsoft Graph.</p></div>
+            <div class="result"><span class="mono">Result</span><p>10,000 users on SSO across 1,837 hotels.</p></div>
+          </div>
+        </article>
+
+        <article class="card">
+          <div>
+            <div class="kind mono">Case study · Front end</div>
+            <h3>Angular monolith to Nx monorepo</h3>
+            <p class="flow">9 COUPLED MODULES → AFFECTED-ONLY BUILDS</p>
+            <ul class="tags"><li>Angular</li><li>Nx</li><li>CI/CD</li></ul>
+          </div>
+          <div class="psr">
+            <div><span class="mono">Problem</span><p>9 tightly coupled modules; every change rebuilt everything.</p></div>
+            <div><span class="mono">Change</span><p>Split into an Nx monorepo that builds only affected modules.</p></div>
+            <div class="result"><span class="mono">Result</span><p>Builds 55% faster. 11 developers ship independently.</p></div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="ai-workflow">
+    <div class="head"><span class="num">02</span><h2>How I build with AI</h2></div>
+    <div class="steps">
+      <div class="step">
+        <span class="mono">Step 1</span>
+        <h3>Settle every open question first</h3>
+        <p>Before the AI writes code, it asks and answers every open question with me until we agree. It doesn't make design decisions on its own.</p>
+      </div>
+      <div class="step">
+        <span class="mono">Step 2</span>
+        <h3>Review every line</h3>
+        <p>When the AI finishes, I review each line before it ships. I own the code, not the model.</p>
+      </div>
+      <div class="step">
+        <span class="mono">Step 3</span>
+        <h3>Write the hard parts myself</h3>
+        <p>When a concept is new or hard, I write that code by hand to build my own judgment.</p>
+      </div>
+    </div>
+    <div class="dk">
+      <p><strong>dk-mode</strong> is the Claude Code skill set I use for this: playbooks for bugs, features and PRs, test-first where a cheap test exists, local verification with evidence, and code review by three models.</p>
+      <div class="links"><a href="https://github.com/DineshKumarPalanisamy/dk-mode">View dk-mode →</a></div>
+    </div>
+  </section>
+
+  <section class="block" id="about">
+    <div class="head"><span class="num">03</span><h2>About</h2></div>
+    <div class="about">
+      <div class="prose">
+        <p>I've spent <strong>12 years building .NET and Azure systems</strong>: hospitality platforms, client projects across sectors, and the cloud plumbing that keeps them cheap and reliable.</p>
+        <p>Since 2024 I've worked as a <strong>remote contractor for a US hospitality software company</strong>, owning integrations, identity, messaging and front-end architecture. Before that I led a .NET team delivering 5 client projects.</p>
+        <p>For the last year my focus has been <strong>AI in .NET</strong>: RAG with citations and refusals, agents that call typed tools instead of touching the database, and the evals and tracing that show whether any of it works.</p>
+      </div>
+      <div class="facts">
+        <dl>
+          <div><dt>Based in</dt><dd>Coimbatore, India</dd></div>
+          <div><dt>Experience</dt><dd>12 years</dd></div>
+          <div><dt>Focus</dt><dd>.NET + Azure + AI</dd></div>
+          <div><dt>Work style</dt><dd>Remote, async-first</dd></div>
+          <div><dt>Open to</dt><dd>Full-time or contract</dd></div>
+        </dl>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="experience">
+    <div class="head"><span class="num">04</span><h2>Experience</h2></div>
+    <ol class="timeline">
+      <li>
+        <div class="when">Aug 2024 – Present</div>
+        <div>
+          <h3>Senior .NET &amp; Azure Engineer (Contract)</h3>
+          <div class="org">Visual Matrix · US hospitality software · Remote</div>
+          <ul>
+            <li>Moved message processing to Azure Functions on Service Bus: 40M messages a month at 12x lower cost per message.</li>
+            <li>Replaced password login with Entra ID SSO for 1,837 hotels and 10,000 users.</li>
+            <li>Split an Angular monolith into an Nx monorepo: builds 55% faster, 11 developers ship independently.</li>
+            <li>Built PMS integrations with Best Western, Duetto, SynXis and HAPI.</li>
+          </ul>
+        </div>
+      </li>
+      <li>
+        <div class="when">May 2018 – Jun 2024</div>
+        <div>
+          <h3>Associate Group Lead · Senior Software Developer</h3>
+          <div class="org">CG-VAK Software &amp; Exports · Coimbatore</div>
+          <ul>
+            <li>Led a .NET team delivering 5 client projects with .NET, Angular and SQL Server.</li>
+            <li>Built and deployed Azure Functions, App Service, Service Bus and Storage with CI/CD pipelines.</li>
+            <li>Received the Best Employee Award twice.</li>
+          </ul>
+        </div>
+      </li>
+      <li>
+        <div class="when">Aug 2016 – May 2018</div>
+        <div>
+          <h3>Software Engineer</h3>
+          <div class="org">G2 Technology Solutions · Coimbatore</div>
+          <ul><li>Migrated a product from AngularJS to Angular and built code templates to automate repetitive code.</li></ul>
+        </div>
+      </li>
+      <li>
+        <div class="when">May 2014 – Jun 2016</div>
+        <div>
+          <h3>Software Engineer · Trainee</h3>
+          <div class="org">Vaanam Technologies · Coimbatore</div>
+          <ul><li>Built ASP.NET MVC applications: class design, bug fixes, unit tests and deployment.</li></ul>
+        </div>
+      </li>
+    </ol>
+  </section>
+
+  <section class="block" id="toolbox">
+    <div class="head"><span class="num">05</span><h2>Technical toolbox</h2></div>
+    <div class="tools">
+      <div><h3>AI</h3><p>Azure OpenAI, Microsoft.Extensions.AI, RAG, agents and typed tool calling, evals, Qdrant, Azure AI Search, Ollama</p></div>
+      <div><h3>Backend</h3><p>.NET 10, C#, ASP.NET Core, ASP.NET MVC, REST APIs</p></div>
+      <div><h3>Azure</h3><p>Functions, App Service, Service Bus, Storage, Entra ID, Microsoft Graph</p></div>
+      <div><h3>Front end</h3><p>Angular, Nx monorepos, AngularJS migration</p></div>
+      <div><h3>Data</h3><p>SQL Server, Azure SQL, Redis</p></div>
+      <div><h3>Delivery</h3><p>Docker, CI/CD pipelines, Claude Code, Scrum</p></div>
+    </div>
+  </section>
+
+  <section class="block" id="proof">
+    <div class="head"><span class="num">06</span><h2>Proof of practice</h2></div>
+    <div class="proof">
+      <div><b>Microsoft Certified</b><p>Azure Developer Associate and Azure Fundamentals.</p></div>
+      <div><b>Best Employee Award, twice</b><p>At CG-VAK, where I later led a .NET team.</p></div>
+      <div><b>Toastmasters committee</b><p>VP Education, VP Public Relations and Treasurer, Coimbatore (2023–2025).</p></div>
+    </div>
+  </section>
+
+  <section class="contact" id="contact">
+    <div class="contact-box">
+      <div>
+        <div class="mono" style="margin-bottom:12px;">07 · Contact</div>
+        <h2>Adding AI to a .NET product?</h2>
+        <p>If your team runs on .NET and Azure and needs AI features that hold up in production, email me with what you're building.</p>
+      </div>
+      <div class="channels">
+        <a href="mailto:dinessns@gmail.com"><span class="mono">Email</span><span>dinessns@gmail.com</span></a>
+        <a href="https://www.linkedin.com/in/dinesh-azure/"><span class="mono">LinkedIn</span><span>in/dinesh-azure</span></a>
+        <a href="https://github.com/DineshKumarPalanisamy"><span class="mono">GitHub</span><span>DineshKumarPalanisamy</span></a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <span class="mono">© 2026 Dinesh Kumar Palanisamy</span>
+    <a class="mono" href="#top" style="text-decoration:none;">Back to top ↑</a>
+  </div>
+</footer>
+
+</body>
+</html>
