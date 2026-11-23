@@ -60,18 +60,39 @@ nav ul a:hover { color: var(--text); }
 .btn { display: inline-flex; align-items: center; gap: 8px; padding: 12px 20px; border-radius: 6px; font-family: var(--font-mono); font-size: 13px; letter-spacing: .06em; text-transform: uppercase; text-decoration: none; border: 1px solid var(--line); }
 .btn.primary { background: var(--accent); color: #1a1205; border-color: var(--accent); font-weight: 500; }
 .btn:hover { border-color: var(--accent); }
-.portrait { margin: 0; width: 260px; aspect-ratio: 5 / 6; border: 1px solid var(--line); border-radius: 12px; background: #000; overflow: hidden; position: relative; }
-.portrait img { display: block; width: 100%; height: 100%; object-fit: cover; }
-.portrait figcaption { position: absolute; left: 0; right: 0; bottom: 0; padding: 28px 14px 12px; text-align: center; background: linear-gradient(transparent, rgba(0,0,0,.85)); color: var(--text); }
-@media (max-width: 760px) { .hero { grid-template-columns: 1fr; padding-top: 40px; gap: 28px; } .portrait { order: -1; width: 150px; } .portrait figcaption { display: none; } }
+.portrait { margin: 0; width: 260px; aspect-ratio: 5 / 6; border: 1px solid rgba(232,163,61,.45); border-radius: 12px; background: #000; position: relative; animation: float 6s ease-in-out infinite; }
+/* Second tilted frame behind the photo, and a soft amber glow under it. */
+.portrait::before { content: ""; position: absolute; inset: -12px; border: 1px solid rgba(232,163,61,.22); border-radius: 16px; transform: rotate(-4deg); pointer-events: none; }
+.portrait::after { content: ""; position: absolute; inset: -36px; border-radius: 50%; background: radial-gradient(circle, rgba(232,163,61,.14), transparent 62%); filter: blur(10px); z-index: -1; pointer-events: none; }
+.portrait img { display: block; width: 100%; height: 100%; object-fit: cover; border-radius: 11px; }
+.portrait .scan { position: absolute; left: 8px; right: 8px; top: 8px; height: 2px; background: linear-gradient(90deg, transparent, var(--accent), transparent); box-shadow: 0 0 18px rgba(232,163,61,.5); animation: scan 4s ease-in-out infinite; z-index: 2; pointer-events: none; }
+.portrait figcaption { position: absolute; left: 0; right: 0; bottom: 0; padding: 28px 14px 12px; text-align: center; background: linear-gradient(transparent, rgba(0,0,0,.85)); color: var(--text); border-radius: 0 0 11px 11px; }
+@keyframes float { 0%, 100% { transform: rotate(1.5deg) translateY(0); } 50% { transform: rotate(-1deg) translateY(-8px); } }
+@keyframes scan { 0%, 100% { top: 8px; opacity: .2; } 50% { top: calc(100% - 10px); opacity: .9; } }
+@media (max-width: 760px) { .hero { grid-template-columns: 1fr; padding-top: 40px; gap: 28px; } .portrait { order: -1; width: 150px; margin-left: 12px; } .portrait figcaption { display: none; } }
 
+/* Scroll reveal: blocks fade in and move up when they enter the screen.
+   Only hidden when JavaScript runs, so the page still shows without it. */
+.js .reveal { opacity: 0; transform: translateY(24px); transition: opacity .7s ease, transform .7s ease; }
+.js .reveal.on { opacity: 1; transform: none; }
+
+/* Cursor ring: follows the mouse, grows over links. Mouse devices only. */
+.cursor { position: fixed; left: -100px; top: -100px; width: 12px; height: 12px; border: 1px solid var(--text); border-radius: 50%; pointer-events: none; z-index: 50; mix-blend-mode: difference; transform: translate(-50%, -50%); transition: width .2s, height .2s, background .2s, border-color .2s; }
+.cursor.big { width: 52px; height: 52px; background: var(--accent); border-color: transparent; }
+@media (pointer: coarse) { .cursor { display: none; } }
 /* Ticker */
 .ticker { border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); overflow: hidden; white-space: nowrap; padding: 14px 0; }
 .ticker .track { display: inline-block; animation: scroll 40s linear infinite; }
 .ticker span { font-family: var(--font-mono); font-size: 13px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); padding: 0 14px; }
 .ticker span.star { color: var(--accent); padding: 0; }
 @keyframes scroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
-@media (prefers-reduced-motion: reduce) { .ticker .track { animation: none; } html { scroll-behavior: auto; } }
+@media (prefers-reduced-motion: reduce) {
+  .ticker .track, .portrait, .portrait .scan { animation: none; }
+  .portrait .scan { display: none; }
+  .js .reveal { opacity: 1; transform: none; transition: none; }
+  .cursor { display: none; }
+  html { scroll-behavior: auto; }
+}
 
 /* Impact numbers */
 .impact { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; margin: 56px 0 0; }
@@ -203,6 +224,7 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
     </div>
     <figure class="portrait">
       <img src="photo.jpg" alt="Dinesh Kumar Palanisamy" width="500" height="600">
+      <span class="scan" aria-hidden="true"></span>
       <figcaption class="mono">Coimbatore, India</figcaption>
     </figure>
   </div>
@@ -428,6 +450,48 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
     <a class="mono" href="#top" style="text-decoration:none;">Back to top ↑</a>
   </div>
 </footer>
+
+<div class="cursor" aria-hidden="true"></div>
+
+<script>
+(() => {
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // Scroll reveal: mark blocks, then show each one when it enters the screen.
+  const targets = document.querySelectorAll(
+    '.hero > div, .impact > div, .head, .card, .step, .dk, .about > *, .timeline > li, .tools > div, .proof > div, .contact-box'
+  );
+  if (!reduce && 'IntersectionObserver' in window) {
+    document.documentElement.classList.add('js');
+    const io = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) { e.target.classList.add('on'); io.unobserve(e.target); }
+      });
+    }, { threshold: 0.1 });
+    targets.forEach((el, i) => {
+      el.classList.add('reveal');
+      // Small delay between items in the same row, so they come in one after another.
+      el.style.transitionDelay = ((i % 4) * 80) + 'ms';
+      io.observe(el);
+    });
+  }
+
+  // Cursor ring: only for a real mouse.
+  const cursor = document.querySelector('.cursor');
+  if (cursor && !reduce && matchMedia('(pointer: fine)').matches) {
+    document.addEventListener('pointermove', e => {
+      cursor.style.left = e.clientX + 'px';
+      cursor.style.top = e.clientY + 'px';
+    });
+    document.querySelectorAll('a, button').forEach(el => {
+      el.addEventListener('mouseenter', () => cursor.classList.add('big'));
+      el.addEventListener('mouseleave', () => cursor.classList.remove('big'));
+    });
+  } else if (cursor) {
+    cursor.remove();
+  }
+})();
+</script>
 
 </body>
 </html>
